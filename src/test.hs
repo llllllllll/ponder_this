@@ -1,36 +1,30 @@
+{-# LANGUAGE BangPatterns #-}
+-- http://domino.research.ibm.com/Comm/wwwr_ponder.nsf/Challenges/February2011.html
 -- IBM feb 2011
 
 import Data.Char (digitToInt,intToDigit)
-import Control.Applicative ((<*>))
 
+--is_flippable :: (Integral a,Show a,Read a) => a -> Bool
+is_flippable n = all (\d -> digitToInt d `elem` [1,2,5,6,8,9]) $ show n
 
-is_valid :: (Integral a,Show a) => a -> Bool
-is_valid n = let fs = map digitToInt $ show n
-             in and (map (`elem` [1,2,5,6,8,9]) fs)
-                    && (is_palandrome $ map flip_digit fs)
+--pairs :: (Integral a,Show a,Read a) => [(a,a)]
+pairs = [(1,1),(2,2),(5,5),(6,9),(8,8),(9,6)]
+
+--candidates :: (Integral a,Show a,Read a) => [[a]]
+candidates = bld [[1],[2],[5],[8],[11],[22],[55],[69],[88],[96]]
   where
-      is_palandrome :: [Int] -> Bool
-      is_palandrome n = reverse n == n
+      bld ns = ns ++ bld [a:n ++ [b] | n <- ns, (a,b) <- pairs]
 
 
-flip_digit :: Int -> Int
-flip_digit 1 = 1
-flip_digit 2 = 2
-flip_digit 5 = 5
-flip_digit 6 = 9
-flip_digit 8 = 8
-flip_digit 9 = 6
-flip_digit _ = error "Not flippable"
+--find_n :: (Integral a,Show a,Read a) => a
+find_n = find_n' [[1],[2],[5],[8],[11],[22],[55],[69],[88],[96]]
+  where
+      find_n' !ns
+          | (not . null) (ms ns) = head (ms ns)
+          | otherwise = find_n' [a:n ++ [b] | n <- ns, (a,b) <- pairs]
+      ms !ns = filter is_found ns
+      is_found !m = let n = (read . concatMap show) m
+                   in n `rem` 2011 == 0 && is_flippable (n^2)
 
-flip_int :: (Integral a,Show a,Read a) => a -> a
-flip_int n
-    | and (map (`elem` [1,2,5,6,8,9]) $ map digitToInt $ show n)
-        = read $ map (intToDigit . flip_digit . digitToInt) $ show n
-    | otherwise = 0
-
-flipables :: Integral a => [a]
-flipables = [1]
-
-find_n :: Integer
-find_n = head [n | n <- flippables
-              , flip_int n == n && is_valid n && is_valid (n^2)]
+main :: IO ()
+main = print find_n
