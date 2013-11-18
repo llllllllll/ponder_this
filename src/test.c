@@ -50,7 +50,7 @@ bool is_flippable(char *str){
 bool is_found(char *str){
     mpz_t v;
     mpz_init_set_str(v,str,10);
-    if (mpz_divisible_ui_p(v,2011) && str[0] != '0' && is_flippable(str)){
+    if (str[0] != '0' && mpz_divisible_ui_p(v,2011) && is_flippable(str)){
 	return true;
     }
     return false;
@@ -61,7 +61,7 @@ bool is_found_prime(char *str){
     mpz_t v;
     mpz_init_set_str(v,str,10);
     mpz_mod_ui(v,v,2011);
-    if (!mpz_cmp_ui(v,100) && str[0] != '0' && is_flippable(str)){
+    if (str[0] != '0' && !mpz_cmp_ui(v,100) && is_flippable(str)){
 	return true;
     }
     return false;
