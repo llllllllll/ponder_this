@@ -1,9 +1,7 @@
 {-# LANGUAGE BangPatterns #-}
-
 -- Joe Jevnik
 -- 15.11.2013
 -- http://domino.research.ibm.com/Comm/wwwr_ponder.nsf/Challenges/February2011.html
--- IBM feb 2011
 
 import Data.Char (digitToInt,intToDigit)
 import Data.Word

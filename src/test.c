@@ -1,5 +1,6 @@
 // Joe Jevnik
 // 16.11.2013
+// C: 5000261920005
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,15 +19,15 @@ char *find_n(char**,u_int);
 static char *pairs[] = {"00","11","22","55","69","88","96"};
 
 // The flippable characters
-static char flippables[] = "01235689";
+static char flippables[] = "0125689";
 
 // Returns true if the number is flippable.
 bool is_flippable(char *str){
     mpz_t n;
     bool f;
-    char b[32];
+    char b[64];
     u_int digits;
-    mpz_init_set_ui(n,atoi(str));
+    mpz_init_set_str(n,str,10);
     mpz_mul(n,n,n);
     digits = gmp_sprintf(b,"%Zu",n);
     mpz_clear(n);
@@ -47,9 +48,20 @@ bool is_flippable(char *str){
 
 // Returns whether or not str matches the criteria.
 bool is_found(char *str){
-    u_llong val;
-    sscanf(str,"%llu",&val);
-    if (val && val % 2011 == 0 && str[0] != '0' && is_flippable(str)){
+    mpz_t v;
+    mpz_init_set_str(v,str,10);
+    if (mpz_divisible_ui_p(v,2011) && str[0] != '0' && is_flippable(str)){
+	return true;
+    }
+    return false;
+}
+
+// Not working ;_;
+bool is_found_prime(char *str){
+    mpz_t v;
+    mpz_init_set_str(v,str,10);
+    mpz_mod_ui(v,v,2011);
+    if (!mpz_cmp_ui(v,100) && str[0] != '0' && is_flippable(str)){
 	return true;
     }
     return false;
@@ -72,7 +84,7 @@ char *find_n(char **arr,u_int elemc){
     }
     for (int n = 0;n < elemc;n++){
 	for (int m = 0;m < 6;m++){
-	    next_arr[6 * n + m] = malloc((strlen(arr[n]) + 3) * sizeof(char));
+	    next_arr[6 * n + m] = malloc((strlen(arr[n]) + 2) * sizeof(char));
 	    sprintf(next_arr[6 * n + m],"%c%s%c",
 		    pairs[m][0],arr[n],pairs[m][1]);
 	}
