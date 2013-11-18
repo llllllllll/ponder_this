@@ -81,8 +81,6 @@ char *find_n(char **arr,u_int elemc){
 	    free(arr);
 	    return ans;
 	}
-    }
-    for (int n = 0;n < elemc;n++){
 	for (int m = 0;m < 6;m++){
 	    next_arr[6 * n + m] = malloc((strlen(arr[n]) + 2) * sizeof(char));
 	    sprintf(next_arr[6 * n + m],"%c%s%c",
